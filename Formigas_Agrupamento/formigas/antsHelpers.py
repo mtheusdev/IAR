@@ -41,7 +41,7 @@ def antDecisionDrop(matrix, current_ant, finished_iteration_ant):
   print("ITEMS E VISÃO: ", quantity_of_items, quantity_of_vision)
   print("PROBABILIDADE E DIVISAO: ",probability, resultDivision)
 
-  if probability <= resultDivision: # SOLTA
+  if probability <= resultDivision * resultDivision: # SOLTA
     print(f"#DEBUG -> Formiga decidiu largar o item na posição x({current_position_ant_x}) y({current_position_ant_y})")
     matrix[current_position_ant_x][current_position_ant_y] = DEAD_ANT_CEL # SOLTA a formiguinha
     current_ant['state'] = EMPTY # Define seu estado como vazio
