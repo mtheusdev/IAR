@@ -62,6 +62,8 @@ def canWalk(x, y):
 def antDecisionCatch(matrix, current_ant):
   current_position_ant_x = current_ant['position'][0]
   current_position_ant_y = current_ant['position'][1]
+  ant_aux = matrix[current_position_ant_x][current_position_ant_y]
+  print('Aux x', ant_aux.x)
 
   quantity_of_vision = 0
   quantity_of_items = 0
@@ -153,8 +155,8 @@ def antBrain(matrix, current_ant):
 
     print("#DEBUG -> Formiga está na posição:", current_position_ant_x, current_position_ant_y)
 
-    print("#DEBUG -> Matriz na posição", matrix[current_position_ant_x][current_position_ant_y])
-    print("#DEBUG -> Matriz na posição", type(matrix[current_position_ant_x][current_position_ant_y]))
+    # print("#DEBUG -> Matriz na posição", matrix[current_position_ant_x][current_position_ant_y])
+    # print("#DEBUG -> Matriz na posição", type(matrix[current_position_ant_x][current_position_ant_y]))
 
     if matrix[current_position_ant_x][current_position_ant_y] == EMPTY_CEL and state == FULL:
       print(f"#DEBUG -> Formiga irá checar se solta o item na posição: x({current_position_ant_x}) y({current_position_ant_y})")

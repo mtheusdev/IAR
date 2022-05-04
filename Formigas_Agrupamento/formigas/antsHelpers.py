@@ -86,7 +86,7 @@ def antDecisionCatch(matrix, current_ant):
   print("ITEMS E VISÃO: ", quantity_of_items, quantity_of_vision)
   print("PROBABILIDADE E DIVISAO: ", probability, resultDivision)
   
-  if probability >= resultDivision: # PEGOU
+  if probability >= resultDivision * resultDivision: # PEGOU
     print(f"#DEBUG -> Formiga decidiu pegar o item na posição x({current_position_ant_x}) y({current_position_ant_y})")
     matrix[current_position_ant_x][current_position_ant_y] = EMPTY_CEL # Pega a formiguinha
     current_ant['state'] = FULL # Define seu estado como carregando/cheio
