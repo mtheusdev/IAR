@@ -1,6 +1,7 @@
 from constants import *
 import random
 import genericHelpers as gh
+from ant import Ant
 
 finished_iteration_ant = False
 
@@ -143,20 +144,24 @@ def antBrain(matrix, current_ant):
     current_ant = antWalk(current_ant, direction)
     print(f"#DEBUG -> Formiga andou para: x({current_ant['position'][0]}) y({current_ant['position'][1]})")
 
-    # if matrix[position_X][position_Y] == -1:
-    #   print("#DEBUG -> Retirando formiga viva da posição anterior") 
-    #   matrix[position_X][position_Y] = EMPTY_CEL
+    if matrix[position_X][position_Y] == -1:
+      print("#DEBUG -> Retirando formiga viva da posição anterior") 
+      matrix[position_X][position_Y] = EMPTY_CEL
 
-    # current_position_ant_x = current_ant['position'][0]
-    # current_position_ant_y = current_ant['position'][1]
-    # print("#DEBUG -> Formiga está na posição:", current_position_ant_x, current_position_ant_y)
+    current_position_ant_x = current_ant['position'][0]
+    current_position_ant_y = current_ant['position'][1]
 
-    # if matrix[current_position_ant_x][current_position_ant_y] == EMPTY_CEL and state == FULL:
-    #   print(f"#DEBUG -> Formiga irá checar se solta o item na posição: x({current_position_ant_x}) y({current_position_ant_y})")
-    #   matrix, current_ant, finished_iteration_ant = antDecisionDrop(matrix, current_ant, finished_iteration_ant)
-    # elif matrix[current_position_ant_x][current_position_ant_y] > 0 and state == EMPTY:
-    #   print(f"#DEBUG -> Formiga irá checar se pega o item na posição: x({current_position_ant_x}) y({current_position_ant_y})")
-    #   matrix, current_ant = antDecisionCatch(matrix, current_ant)
+    print("#DEBUG -> Formiga está na posição:", current_position_ant_x, current_position_ant_y)
+
+    print("#DEBUG -> Matriz na posição", matrix[current_position_ant_x][current_position_ant_y])
+    print("#DEBUG -> Matriz na posição", type(matrix[current_position_ant_x][current_position_ant_y]))
+
+    if matrix[current_position_ant_x][current_position_ant_y] == EMPTY_CEL and state == FULL:
+      print(f"#DEBUG -> Formiga irá checar se solta o item na posição: x({current_position_ant_x}) y({current_position_ant_y})")
+      matrix, current_ant, finished_iteration_ant = antDecisionDrop(matrix, current_ant, finished_iteration_ant)
+    elif isinstance(matrix[current_position_ant_x][current_position_ant_y], Ant) and state == EMPTY:
+        print(f"#DEBUG -> Formiga irá checar se pega o item na posição: x({current_position_ant_x}) y({current_position_ant_y})")
+        matrix, current_ant = antDecisionCatch(matrix, current_ant)
 
     exit(0)
     # gh.writeMatrixInFile(matrix, 'matrix2_file')
