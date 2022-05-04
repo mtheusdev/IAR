@@ -1,18 +1,10 @@
 from constants import *
+import math
 import random
 import genericHelpers as gh
-from ant import Ant
+from dataItem import DataItem
 
 finished_iteration_ant = False
-
-def checkMatrixCelExists(matrix, x, y):
-  if not (x < 0 or y < 0 or x >= MATRIX_LENGTH or y >= MATRIX_LENGTH): # Existe a celula
-    if matrix[x][y] == 1: # Tem formiga morta
-      return 1
-    else: # Não tem formiga morta
-      return 2
-  else:
-    return 0
 
 def antDecisionDrop(matrix, current_ant, finished_iteration_ant):
   current_position_ant_x = current_ant['position'][0]
@@ -52,54 +44,65 @@ def antDecisionDrop(matrix, current_ant, finished_iteration_ant):
     print(f"#DEBUG -> Formiga decidiu nao largar o item na posição x({current_position_ant_x}) y({current_position_ant_y})")
   return matrix, current_ant, finished_iteration_ant
 
-def canWalk(x, y):
-  if x >= MATRIX_LENGTH or y >= MATRIX_LENGTH or x < 0 or y < 0:
-    return False
+def checkMatrixCelExists(matrix, x, y):
+  if not (x < 0 or y < 0 or x >= MATRIX_LENGTH or y >= MATRIX_LENGTH): # Existe a celula
+    if matrix[x][y] == 1: # Tem formiga morta
+      return 1
+    else: # Não tem formiga morta
+      return 2
   else:
-    return True
+    return 0
 
+def getValuePosition(matrix, current_x, current_y): # Pega retorna 0 se nao tiver nada ou um objeto dataItem caso tenha um dado
+  new_x = current_x
+  new_y = current_y
+
+  if current_x >= MATRIX_LENGTH:
+    new_x = current_x - MATRIX_LENGTH
+  elif current_x <= 0: # -1
+    new_x = MATRIX_LENGTH + current_x - 1
+  
+  if current_y >= MATRIX_LENGTH:
+    new_y = current_y - MATRIX_LENGTH
+  elif current_y <= 0:
+    new_y = MATRIX_LENGTH + current_y - 1
+
+  return matrix[new_x, new_y]
+
+def euclidianDistance(currentData, targetData): # Retorna a distancia do dado da posicao atual e o a ser verificado
+  return math.sqrt((currentData.x - targetData.x)**2 + (currentData.y - targetgetData.y)**2)
 
 def antDecisionCatch(matrix, current_ant):
   current_position_ant_x = current_ant['position'][0]
   current_position_ant_y = current_ant['position'][1]
-  ant_aux = matrix[current_position_ant_x][current_position_ant_y]
-  print('Aux x', ant_aux.x)
+  current_data_item = matrix[current_position_ant_x][current_position_ant_y]
+  cont_x = current_position_ant_x - ANT_VISION_RADIUS
+  sum_distances = 0
 
-  quantity_of_vision = 0
-  quantity_of_items = 0
-  cont_x = current_position_ant_x - 1
-
-  while cont_x <= (current_position_ant_x + 1):
-    cont_y = current_position_ant_y - 1
-    while cont_y <= (current_position_ant_y + 1):
-      if not (cont_x == current_position_ant_x and cont_y == current_position_ant_y):
-        resultCheck = checkMatrixCelExists(matrix, cont_x, cont_y)
-        if resultCheck == 2:
-          quantity_of_vision += 1
-        elif resultCheck == 1:
-          quantity_of_vision += 1
-          quantity_of_items += 1
-        cont_y += 1
-      else:
-        cont_y += 1
+  while cont_x <= (current_position_ant_x + ANT_VISION_RADIUS):
+    cont_y = current_position_ant_y - ANT_VISION_RADIUS
+    while cont_y <= (current_position_ant_y + 1):    
+      targetDataItem = getValuePosition(matrix, cont_x, cont_y)
+      if isinstance(targetDataItem, DataItem):
+        sum_distances += euclidianDistance(currentDataItem, targetDataItem)
+      cont_y += 1
     cont_x += 1
 
-  resultDivision = quantity_of_items / quantity_of_vision #DIGAMOS 2/8 = 0.25 
-  probability = random.random() #DIGAMOS 0.7
+  CONTINUAR AQUI: FORMULAS PARA PEGAR OU LARGAR
 
-  print("ITEMS E VISÃO: ", quantity_of_items, quantity_of_vision)
-  print("PROBABILIDADE E DIVISAO: ", probability, resultDivision)
+  # print("ITEMS E VISÃO: ", quantity_of_items, quantity_of_vision)
+  # print("PROBABILIDADE E DIVISAO: ", probability, resultDivision)
   
-  if probability >= resultDivision: # PEGOU
-    print(f"#DEBUG -> Formiga decidiu pegar o item na posição x({current_position_ant_x}) y({current_position_ant_y})")
-    matrix[current_position_ant_x][current_position_ant_y] = EMPTY_CEL # Pega a formiguinha
-    current_ant['state'] = FULL # Define seu estado como carregando/cheio
-  else:
-    print(f"#DEBUG -> Formiga decidiu não pegar o item na posição x({current_position_ant_x}) y({current_position_ant_y})")
-    # gh.writeMatrixInFile(matrix, 'matrix2_file')
-    # exit(0)
-  print(f"#DEBUG -> MATRIZ NA posição: x({current_position_ant_x}) y({current_position_ant_y}) = {matrix[current_position_ant_x][current_position_ant_y]}")
-  return matrix, current_ant
+  # if probability >= resultDivision: # PEGOU
+  #   print(f"#DEBUG -> Formiga decidiu pegar o item na posição x({current_position_ant_x}) y({current_position_ant_y})")
+  #   matrix[current_position_ant_x][current_position_ant_y] = EMPTY_CEL # Pega a formiguinha
+  #   current_ant['state'] = FULL # Define seu estado como carregando/cheio
+  # else:
+  #   print(f"#DEBUG -> Formiga decidiu não pegar o item na posição x({current_position_ant_x}) y({current_position_ant_y})")
+  #   # gh.writeMatrixInFile(matrix, 'matrix2_file')
+  #   # exit(0)
+  # print(f"#DEBUG -> MATRIZ NA posição: x({current_position_ant_x}) y({current_position_ant_y}) = {matrix[current_position_ant_x][current_position_ant_y]}")
+  # return matrix, current_ant
 
 def antWalk(current_ant, direction):
   if direction == 1: # avança em x
@@ -161,7 +164,7 @@ def antBrain(matrix, current_ant):
     if matrix[current_position_ant_x][current_position_ant_y] == EMPTY_CEL and state == FULL:
       print(f"#DEBUG -> Formiga irá checar se solta o item na posição: x({current_position_ant_x}) y({current_position_ant_y})")
       matrix, current_ant, finished_iteration_ant = antDecisionDrop(matrix, current_ant, finished_iteration_ant)
-    elif isinstance(matrix[current_position_ant_x][current_position_ant_y], Ant) and state == EMPTY:
+    elif isinstance(matrix[current_position_ant_x][current_position_ant_y], DataItem) and state == EMPTY:
         print(f"#DEBUG -> Formiga irá checar se pega o item na posição: x({current_position_ant_x}) y({current_position_ant_y})")
         matrix, current_ant = antDecisionCatch(matrix, current_ant)
 

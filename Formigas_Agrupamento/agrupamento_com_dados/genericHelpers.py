@@ -1,6 +1,6 @@
 import random
 from constants import *
-from ant import Ant
+from dataItem import DataItem
 
 def generateMatrix():
   matrix = [[0 for j in range(MATRIX_LENGTH)] for i in range (MATRIX_LENGTH)]
@@ -63,7 +63,7 @@ def setDataInMatrix(matrix, position_items_list):
         current_data = database[database_randon_index_list[database_array_position]]
         # print(current_data)
         database_array_position +=1
-        matrix[i][j] = Ant(current_data[0], current_data[1], current_data[2])
+        matrix[i][j] = DataItem(current_data[0], current_data[1], current_data[2])
       cont += 1
 
   ref_file.close()
