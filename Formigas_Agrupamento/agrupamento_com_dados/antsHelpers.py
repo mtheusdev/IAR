@@ -70,7 +70,7 @@ def getValuePosition(matrix, current_x, current_y): # Pega retorna 0 se nao tive
   return matrix[new_x, new_y]
 
 def euclidianDistance(currentData, targetData): # Retorna a distancia do dado da posicao atual e o a ser verificado
-  return math.sqrt((currentData.x - targetData.x)**2 + (currentData.y - targetgetData.y)**2)
+  return math.sqrt((currentData.x - targetData.x)**2 + (currentData.y - targetData.y)**2)
 
 def antDecisionCatch(matrix, current_ant):
   current_position_ant_x = current_ant['position'][0]
@@ -84,7 +84,7 @@ def antDecisionCatch(matrix, current_ant):
     while cont_y <= (current_position_ant_y + 1):    
       targetDataItem = getValuePosition(matrix, cont_x, cont_y)
       if isinstance(targetDataItem, DataItem):
-        sum_distances += euclidianDistance(currentDataItem, targetDataItem)
+        sum_distances += euclidianDistance(current_data_item, targetDataItem)
       cont_y += 1
     cont_x += 1
 
